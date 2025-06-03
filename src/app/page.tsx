@@ -132,7 +132,7 @@ export default function Home() {
           </h1>
           <button
             onClick={handleButtonClick}
-            className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-4 px-8 rounded-full text-xl shadow-lg transform hover:scale-105 transition-all duration-300"
+            className="bg-pink-100 hover:bg-pink-600 text-[#d11010] hover:text-[#fff] font-bold py-4 px-8 rounded-full text-xl shadow-lg transform hover:scale-105 transition-all duration-300"
           >
             Clique em Mim ❤️
           </button>
