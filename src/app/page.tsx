@@ -9,6 +9,7 @@ export default function Home() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [availableImages, setAvailableImages] = useState<string[]>([]);
+  const [timeTogether, setTimeTogether] = useState<string>("");
 
   // Carrega todas as imagens disponíveis (JPG, JPEG, PNG)
   useEffect(() => {
@@ -19,14 +20,13 @@ export default function Home() {
       const loadedImages = [];
       
       for (let i = 1; i <= totalImages; i++) {
-        // Tenta encontrar a imagem em qualquer um dos formatos
         for (const ext of imageExtensions) {
           const imgPath = `/assets/fotos/${i}.${ext}`;
           try {
             const exists = await checkImageExists(imgPath);
             if (exists) {
               loadedImages.push(imgPath);
-              break; // Se encontrou em um formato, não tenta os outros
+              break;
             }
           } catch (e) {
             console.warn(`Erro ao verificar imagem ${imgPath}:`, e);
@@ -39,6 +39,30 @@ export default function Home() {
     };
     
     loadImages();
+  }, []);
+
+  // Calcula o tempo desde 6 de outubro de 2023
+  useEffect(() => {
+    const startDate = new Date("2023-10-06T00:00:00");
+    const updateTime = () => {
+      const now = new Date();
+      const diff = now.getTime() - startDate.getTime();
+      
+      const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
+      const months = Math.floor((diff % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30));
+      const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      
+      setTimeTogether(
+        `${years} anos, ${months} meses, ${days} dias, ${hours} horas, ${minutes} minutos, ${seconds} segundos`
+      );
+    };
+    
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
   }, []);
 
   const checkImageExists = async (url: string) => {
@@ -68,6 +92,10 @@ export default function Home() {
       }
       setIsPlaying(!isPlaying);
     }
+  };
+
+  const generateCertificate = () => {
+    window.open("/assets/certificado.pdf", "_blank");
   };
 
   return (
@@ -106,6 +134,12 @@ export default function Home() {
             <source src="/assets/RuthB-Dandelions.mp3" type="audio/mpeg" />
           </audio>
 
+          {/* Relógio do tempo juntos */}
+          <div className="bg-white p-4 rounded-lg shadow-md w-full max-w-md text-center">
+            <h2 className="text-xl font-bold text-pink-600 mb-2">6 de Outubro de 2023</h2>
+            <p className="text-lg font-semibold text-pink-500">{timeTogether}</p>
+          </div>
+
           {/* Carrossel de fotos em moldura */}
           <div className="relative w-full max-w-4xl h-[32rem] md:h-[40rem] overflow-hidden rounded-2xl shadow-xl border-8 border-white bg-white">
             {availableImages.length > 0 ? (
@@ -121,9 +155,17 @@ export default function Home() {
           <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl">
             <h2 className="text-2xl font-bold text-pink-600 mb-4">Para você, meu amor...</h2>
             <p className="text-gray-700 text-lg">
-            Eu quero que saiba que sou um homem pequeno obviamente não preciso nem falar kkkkk, mas quando estou perto de você eu me sinto gigante e a pessoa mais forte do mundo por ter você ao meu lado, cada dia ao seu lado é um presente que eu guardo com todo cuidado no meu coração e eu quero você ao meu lado para sempre até meu último suspiro. Sua beleza, seu sorriso e seu amor iluminam minha vida de uma forma que palavras nunca poderão expressar completamente amor. Quero que você saiba que você é a pessoa mais especial do mundo para mim e agradeço sempre a DEUS por ter te colocado na minha vida, você apareceu na minha vida como uma luz na hora que eu mais precisava e eu sou o homem mais feliz do mundo por ter você ao meu lado e sei que vamos conquistar tudo que desejamos e sonhamos, quero conquistar nossa casinha juntos, ter nosso cachorrinho salsicha chamado slink kkkkk e no mínimo dois filhos para ficar correndo pela nossa casinha, todo o meu futuro eu só imagino com você nele amor. EU TE AMO mais do que todas as estrelas no céu e todas as gotas no oceano, não existe número e nem quantidade que consiga contar o amor que sinto por você. ❤️
+              Eu quero que saiba que sou um homem pequeno obviamente não preciso nem falar kkkkk, mas quando estou perto de você eu me sinto gigante e a pessoa mais forte do mundo por ter você ao meu lado, cada dia ao seu lado é um presente que eu guardo com todo cuidado no meu coração e eu quero você ao meu lado para sempre até meu último suspiro. Sua beleza, seu sorriso e seu amor iluminam minha vida de uma forma que palavras nunca poderão expressar completamente amor. Quero que você saiba que você é a pessoa mais especial do mundo para mim e agradeço sempre a DEUS por ter te colocado na minha vida, você apareceu na minha vida como uma luz na hora que eu mais precisava e eu sou o homem mais feliz do mundo por ter você ao meu lado e sei que vamos conquistar tudo que desejamos e sonhamos, quero conquistar nossa casinha juntos, ter nosso cachorrinho salsicha chamado slink kkkkk e no mínimo dois filhos para ficar correndo pela nossa casinha, todo o meu futuro eu só imagino com você nele amor. EU TE AMO mais do que todas as estrelas no céu e todas as gotas no oceano, não existe número e nem quantidade que consiga contar o amor que sinto por você. ❤️
             </p>
           </div>
+
+          {/* Botão para emitir certificado */}
+          <button
+            onClick={generateCertificate}
+            className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-6 rounded-full text-lg shadow-lg transform hover:scale-105 transition-all duration-300"
+          >
+            Receba seu Certificado de Melhor Namorada do Mundo! 🌸
+          </button>
         </div>
       ) : (
         <div className="text-center z-10">
